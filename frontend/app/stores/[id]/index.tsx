@@ -1,5 +1,4 @@
 import { useEffect, useDeferredValue, useMemo, useState } from "react";
-import { Alert } from "react-native";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
 
@@ -22,6 +21,7 @@ import { ProductCard } from "@/features/inventory/components/product-card";
 import { useInventoryStore } from "@/features/inventory/inventory.store";
 import { EmptyState } from "@/shared/components/empty-state";
 import { ScreenShell } from "@/shared/components/screen-shell";
+import { confirmDestructive } from "@/shared/utils/confirm-destructive";
 
 export default function StoreDetailsScreen() {
   const router = useRouter();
@@ -98,17 +98,17 @@ export default function StoreDetailsScreen() {
     });
   }, [deferredQuery, productsByStoreId, storeId]);
 
-  function confirmDeleteProduct(productId: string, name: string) {
-    Alert.alert("Excluir produto", `Deseja remover o produto "${name}"?`, [
-      { text: "Cancelar", style: "cancel" },
-      {
-        text: "Excluir",
-        style: "destructive",
-        onPress: () => {
-          void deleteProduct(productId, storeId);
-        },
-      },
-    ]);
+  async function confirmDeleteProduct(productId: string, name: string) {
+    const confirmed = await confirmDestructive({
+      title: "Excluir produto",
+      message: `Deseja remover o produto "${name}"?`,
+    });
+
+    if (!confirmed) {
+      return;
+    }
+
+    await deleteProduct(productId, storeId);
   }
 
   if (!hasCheckedStore || (!store && loadingStores)) {
@@ -127,12 +127,12 @@ export default function StoreDetailsScreen() {
     return (
       <ScreenShell
         eyebrow="detalhes"
-        title="Loja não encontrada"
-        subtitle="Pode ter sido removida ou o id da rota está incorreto."
+        title="Loja nao encontrada"
+        subtitle="Pode ter sido removida ou o id da rota esta incorreto."
       >
         <EmptyState
           title="Nada para mostrar aqui"
-          description="Volte para a listagem e escolha uma loja válida."
+          description="Volte para a listagem e escolha uma loja valida."
         />
       </ScreenShell>
     );
@@ -159,7 +159,9 @@ export default function StoreDetailsScreen() {
             }
           >
             <Feather name="edit-2" size={14} color="#4f46e5" />
-            <Text color="#4f46e5" size="sm" bold>Editar</Text>
+            <Text color="#4f46e5" size="sm" bold>
+              Editar
+            </Text>
           </Button>
           <Button
             bg="#059669"
@@ -173,7 +175,9 @@ export default function StoreDetailsScreen() {
             }
           >
             <Feather name="plus" size={16} color="white" />
-            <Text color="white" size="sm" bold>Novo Produto</Text>
+            <Text color="white" size="sm" bold>
+              Novo Produto
+            </Text>
           </Button>
         </HStack>
       }
@@ -226,7 +230,7 @@ export default function StoreDetailsScreen() {
             </Text>
             <Input borderRadius="full" bg="#f8fafc" borderColor="#cbd5e1">
               <InputField
-                placeholder="Ex.: camiseta, mouse, eletrônicos"
+                placeholder="Ex.: camiseta, mouse, eletronicos"
                 value={query}
                 onChangeText={(value) => setProductSearch(storeId, value)}
               />
@@ -259,7 +263,9 @@ export default function StoreDetailsScreen() {
                   params: { id: storeId, productId: product.id },
                 })
               }
-              onDelete={() => confirmDeleteProduct(product.id, product.name)}
+              onDelete={() => {
+                void confirmDeleteProduct(product.id, product.name);
+              }}
             />
           ))}
         </VStack>

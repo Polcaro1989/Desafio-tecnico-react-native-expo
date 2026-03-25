@@ -1,5 +1,4 @@
 import { useEffect, useDeferredValue, useMemo } from "react";
-import { Alert } from "react-native";
 
 import { useRouter } from "expo-router";
 
@@ -19,6 +18,7 @@ import { StoreCard } from "@/features/inventory/components/store-card";
 import { useInventoryStore } from "@/features/inventory/inventory.store";
 import { EmptyState } from "@/shared/components/empty-state";
 import { ScreenShell } from "@/shared/components/screen-shell";
+import { confirmDestructive } from "@/shared/utils/confirm-destructive";
 
 export default function StoresScreen() {
   const router = useRouter();
@@ -49,27 +49,23 @@ export default function StoresScreen() {
     });
   }, [deferredQuery, stores]);
 
-  function confirmDelete(id: string, name: string) {
-    Alert.alert(
-      "Excluir loja",
-      `Deseja remover a loja "${name}"? Os produtos ligados a ela também serão removidos.`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Excluir",
-          style: "destructive",
-          onPress: () => {
-            void deleteStore(id);
-          },
-        },
-      ],
-    );
+  async function confirmDelete(id: string, name: string) {
+    const confirmed = await confirmDestructive({
+      title: "Excluir loja",
+      message: `Deseja remover a loja "${name}"? Os produtos ligados a ela tambem serao removidos.`,
+    });
+
+    if (!confirmed) {
+      return;
+    }
+
+    await deleteStore(id);
   }
 
   return (
     <ScreenShell
       eyebrow="painel principal"
-      title="Lojas e estoque em um lugar só"
+      title="Lojas e estoque em um lugar so"
       action={
         <Button
           bg="#4f46e5"
@@ -94,11 +90,11 @@ export default function StoresScreen() {
         >
           <VStack gap="$3">
             <Text color="#475569" size="sm">
-              Busca rápida
+              Busca rapida
             </Text>
             <Input borderRadius="full" bg="#f8fafc" borderColor="#cbd5e1">
               <InputField
-                placeholder="Buscar por nome ou endereço"
+                placeholder="Buscar por nome ou endereco"
                 value={query}
                 onChangeText={setQuery}
               />
@@ -143,7 +139,9 @@ export default function StoresScreen() {
                   params: { id: store.id },
                 })
               }
-              onDelete={() => confirmDelete(store.id, store.name)}
+              onDelete={() => {
+                void confirmDelete(store.id, store.name);
+              }}
             />
           ))}
         </VStack>
