@@ -1,0 +1,22 @@
+# Root artifacts
+index.html
+
+# Dependencies
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Build outputs
+backend/dist/
+frontend/dist/
+
+# Expo
+frontend/.expo/
+
+# Editor and OS files
+frontend/.vscode/
+.DS_Store
+Thumbs.db
+
+# Preserve the previous nested frontend repository metadata outside the new root repo
+frontend/.git.frontend-backup/

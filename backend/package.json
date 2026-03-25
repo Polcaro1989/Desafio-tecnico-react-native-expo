@@ -1,0 +1,39 @@
+{
+  "name": "storehub-backend-mock",
+  "version": "0.1.0",
+  "description": "Mock API layer for the React Native Expo challenge",
+  "main": "dist/index.js",
+  "react-native": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "test": "node ./node_modules/jest/bin/jest.js --runInBand",
+    "test:watch": "node ./node_modules/jest/bin/jest.js --watch",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc -p tsconfig.json",
+    "smoke": "tsx src/server/preview.ts",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "miragejs",
+    "mock-api",
+    "react-native",
+    "expo"
+  ],
+  "author": "",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "miragejs": "^0.1.48"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.5.2",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.5",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}
