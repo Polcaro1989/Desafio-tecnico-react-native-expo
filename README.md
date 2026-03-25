@@ -224,8 +224,3 @@ npx expo export --platform web
 
 Como o estado do mock e persistido no AsyncStorage, para voltar ao estado inicial e preciso limpar os dados do app no dispositivo ou emulador. Ao abrir novamente, a seed padrao sera carregada.
 
-## Resumo de apresentacao
-
-Se eu fosse apresentar este projeto de forma objetiva:
-
-"Eu separei o desafio em frontend e backend mock para manter a arquitetura clara. O backend modela contratos, rotas e validacoes com MirageJS, enquanto o frontend consome essa API simulada com Expo Router, Zustand e Gluestack UI. Tambem adicionei persistencia local do mock e testes para garantir consistencia do fluxo."
